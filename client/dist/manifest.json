@@ -1,0 +1,17 @@
+{
+  "name": "FleetManager Pro",
+  "short_name": "FleetManager",
+  "description": "Enterprise Fleet & Document Expiry Management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050B14",
+  "theme_color": "#07111F",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

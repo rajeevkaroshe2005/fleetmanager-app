@@ -1385,12 +1385,57 @@ app.post('/api/seed/reset', (req, res) => {
   }
 });
 
-// Serve frontend build in production if available
-const clientDist = path.join(__dirname, '..', 'client', 'dist');
-if (fs.existsSync(clientDist)) {
+// Robust frontend build resolution across production environments
+const candidateDistPaths = [
+  path.resolve(__dirname, '..', 'client', 'dist'),
+  path.resolve(process.cwd(), 'client', 'dist'),
+  path.resolve(__dirname, 'client', 'dist'),
+  path.resolve(process.cwd(), 'dist')
+];
+
+const clientDist = candidateDistPaths.find(p => fs.existsSync(p) && fs.existsSync(path.join(p, 'index.html')));
+
+if (clientDist) {
+  console.log(`📦 Serving production client assets from: ${clientDist}`);
   app.use(express.static(clientDist));
-  app.use((req, res) => {
-    res.sendFile(path.join(clientDist, 'index.html'));
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api/') && req.path !== '/api' && !req.path.startsWith('/uploads/')) {
+      return res.sendFile(path.join(clientDist, 'index.html'));
+    }
+    next();
+  });
+} else {
+  console.warn('⚠️ client/dist not found. Serving API fallback landing page.');
+  app.get('/', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <title>FleetManager Pro Cloud Server</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #07111F; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+            .card { background: #0B192C; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 36px 28px; max-width: 480px; text-align: center; box-shadow: 0 24px 48px rgba(0,0,0,0.6); }
+            .badge { display: inline-block; background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); padding: 5px 14px; border-radius: 9999px; font-weight: 700; font-size: 13px; margin-bottom: 18px; letter-spacing: 0.5px; }
+            h1 { color: #38bdf8; font-size: 26px; font-weight: 800; margin: 0 0 10px 0; }
+            p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin: 0 0 16px 0; }
+            .btn { display: inline-block; background: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px; margin-top: 10px; transition: background 0.2s; }
+            .btn:hover { background: #1d4ed8; }
+            .meta { margin-top: 24px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: #64748b; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="badge">🟢 SERVER ONLINE</div>
+            <h1>FleetManager Pro API</h1>
+            <p>The cloud backend server and SQLite fleet database are running live.</p>
+            <p>Connect your Android APK or external clients using this server URL.</p>
+            <a href="/api/health" class="btn">Check /api/health Status →</a>
+            <div class="meta">FleetManager Pro Enterprise &bull; 24/7 Cloud Node Engine</div>
+          </div>
+        </body>
+      </html>
+    `);
   });
 }
 

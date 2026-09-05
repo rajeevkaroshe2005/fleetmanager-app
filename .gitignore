@@ -2,9 +2,6 @@
 node_modules/
 client/node_modules/
 
-# Production build output
-client/dist/
-
 # Android build outputs & local config
 *.apk
 client/android/.gradle/
