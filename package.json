@@ -2,7 +2,7 @@
   "name": "truck",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"node server/index.js\" \"npm run dev --prefix client\"",
     "server": "node server/index.js",

@@ -406,105 +406,150 @@ app.get('/api/vehicles', authMiddleware, (req, res) => {
 app.post('/api/vehicles', authMiddleware, (req, res) => {
   try {
     const userId = req.user.id;
-    const { vehicle_number, vehicle_type, model, manufacturing_year, purchase_date, owner_name, driver_id, notes, status } = req.body;
+    const body = req.body || {};
+    const { vehicle_number, vehicle_type, model, manufacturing_year, purchase_date, owner_name, driver_id, notes, status } = body;
 
+    // 1. Validate vehicle registration number
     if (!vehicle_number || typeof vehicle_number !== 'string' || !vehicle_number.trim()) {
       return res.status(400).json({ error: 'Vehicle registration number is required (e.g. MH 09 GJ 6600)' });
     }
-    if (!model || typeof model !== 'string' || !model.trim()) {
-      return res.status(400).json({ error: 'Model name is required (e.g. Eicher Pro 2110)' });
+    const cleanVehicleNum = vehicle_number.trim().replace(/\s+/g, ' ').toUpperCase();
+    if (cleanVehicleNum.length < 3) {
+      return res.status(400).json({ error: 'Registration number must be at least 3 characters long.' });
     }
 
-    const cleanVehicleNum = vehicle_number.trim().replace(/\s+/g, ' ').toUpperCase();
+    // 2. Validate model
+    if (!model || typeof model !== 'string' || !model.trim()) {
+      return res.status(400).json({ error: 'Vehicle model name is required (e.g. Eicher Pro 2110 / Tata Signa)' });
+    }
+    const cleanModel = model.trim();
 
-    // Check if vehicle number already exists for user (ignoring space differences)
+    // 3. Check registration number uniqueness within user fleet (ignoring spaces & case)
     const existing = db.prepare(`
-      SELECT id FROM vehicles 
+      SELECT id, vehicle_number FROM vehicles 
       WHERE user_id = ? AND UPPER(REPLACE(vehicle_number, ' ', '')) = UPPER(REPLACE(?, ' ', ''))
     `).get(userId, cleanVehicleNum);
 
     if (existing) {
-      return res.status(400).json({ error: `This vehicle registration number (${cleanVehicleNum}) already exists in your fleet.` });
+      return res.status(409).json({ 
+        error: `Vehicle registration number '${existing.vehicle_number}' is already registered in your fleet.` 
+      });
     }
 
-    // Normalize driver_id to ensure it belongs to this user and exists, otherwise null
+    // 4. Validate and normalize driver_id
     let validDriverId = null;
-    if (driver_id !== undefined && driver_id !== null && driver_id !== '' && driver_id !== 'undefined' && driver_id !== 'null') {
+    if (driver_id !== undefined && driver_id !== null && driver_id !== '' && driver_id !== 'null' && driver_id !== 'undefined' && driver_id !== 0 && driver_id !== '0') {
       const parsedDriverId = parseInt(driver_id, 10);
-      if (!isNaN(parsedDriverId) && parsedDriverId > 0) {
-        const driverExists = db.prepare('SELECT id FROM drivers WHERE id = ? AND user_id = ?').get(parsedDriverId, userId);
-        if (driverExists) {
-          validDriverId = driverExists.id;
-        }
+      if (isNaN(parsedDriverId) || parsedDriverId <= 0) {
+        return res.status(400).json({ error: 'Invalid driver selected. Please select a valid driver.' });
       }
+      const driverExists = db.prepare('SELECT id, name FROM drivers WHERE id = ? AND user_id = ?').get(parsedDriverId, userId);
+      if (!driverExists) {
+        return res.status(400).json({ error: 'The selected driver was not found in your fleet.' });
+      }
+      validDriverId = parsedDriverId;
     }
 
-    // Normalize manufacturing year
+    // 5. Validate manufacturing year
     let validYear = null;
-    if (manufacturing_year !== undefined && manufacturing_year !== null && manufacturing_year !== '' && manufacturing_year !== 'undefined' && manufacturing_year !== 'null') {
+    if (manufacturing_year !== undefined && manufacturing_year !== null && manufacturing_year !== '' && manufacturing_year !== 'null' && manufacturing_year !== 'undefined') {
       const parsedYear = parseInt(manufacturing_year, 10);
-      if (!isNaN(parsedYear) && parsedYear >= 1950 && parsedYear <= 2100) {
-        validYear = parsedYear;
+      const currentYear = new Date().getFullYear();
+      if (isNaN(parsedYear) || parsedYear < 1950 || parsedYear > currentYear + 2) {
+        return res.status(400).json({ 
+          error: `Manufacturing year must be a valid 4-digit year between 1950 and ${currentYear + 1}` 
+        });
       }
+      validYear = parsedYear;
     }
 
-    // Normalize purchase date
+    // 6. Validate purchase date
     let validPurchaseDate = null;
     if (purchase_date && typeof purchase_date === 'string' && purchase_date.trim()) {
       const trimmedDate = purchase_date.trim();
-      if (trimmedDate !== 'undefined' && trimmedDate !== 'null' && trimmedDate !== 'dd-mm-yyyy' && trimmedDate !== '') {
-        validPurchaseDate = trimmedDate;
+      if (trimmedDate !== 'null' && trimmedDate !== 'undefined' && trimmedDate !== 'dd-mm-yyyy' && trimmedDate !== '') {
+        const parsedDate = new Date(trimmedDate);
+        if (isNaN(parsedDate.getTime())) {
+          return res.status(400).json({ error: 'Purchase date is invalid. Please select a valid calendar date.' });
+        }
+        validPurchaseDate = trimmedDate.slice(0, 10);
       }
     }
 
-    // Normalize owner name
-    let validOwnerName = null;
-    if (owner_name && typeof owner_name === 'string' && owner_name.trim() && owner_name.trim() !== 'undefined' && owner_name.trim() !== 'null') {
+    // 7. Validate vehicle type
+    const ALLOWED_VEHICLE_TYPES = ['Truck', 'Trailer', 'Tanker', 'Tipper', 'Container', 'Mini Truck', 'Pickup', 'Van', 'Bus', 'Other'];
+    let validVehicleType = 'Truck';
+    if (vehicle_type && typeof vehicle_type === 'string' && vehicle_type.trim()) {
+      const trimmedType = vehicle_type.trim();
+      validVehicleType = ALLOWED_VEHICLE_TYPES.includes(trimmedType) ? trimmedType : 'Truck';
+    }
+
+    // 8. Normalize owner name
+    let validOwnerName = req.user.business_name || req.user.name || 'Fleet Owner';
+    if (owner_name && typeof owner_name === 'string' && owner_name.trim() && owner_name.trim() !== 'null' && owner_name.trim() !== 'undefined') {
       validOwnerName = owner_name.trim();
-    } else {
-      validOwnerName = req.user.business_name || req.user.name || 'Owner';
     }
 
-    // Normalize vehicle type
-    const validVehicleType = (vehicle_type && typeof vehicle_type === 'string' && vehicle_type.trim())
-      ? vehicle_type.trim()
-      : 'Truck';
+    // 9. Normalize status
+    const ALLOWED_STATUSES = ['active', 'inactive', 'maintenance'];
+    const validStatus = (status && typeof status === 'string' && ALLOWED_STATUSES.includes(status.toLowerCase().trim()))
+      ? status.toLowerCase().trim()
+      : 'active';
 
-    const stmt = db.prepare(`
-      INSERT INTO vehicles (user_id, vehicle_number, vehicle_type, model, manufacturing_year, purchase_date, owner_name, driver_id, status, notes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
+    // 10. Normalize notes
+    const validNotes = (notes && typeof notes === 'string' && notes.trim() !== 'null' && notes.trim() !== 'undefined')
+      ? notes.trim()
+      : '';
 
-    const result = stmt.run(
-      userId,
-      cleanVehicleNum,
-      validVehicleType,
-      model.trim(),
-      validYear,
-      validPurchaseDate,
-      validOwnerName,
-      validDriverId,
-      status || 'active',
-      notes && typeof notes === 'string' && notes.trim() !== 'undefined' && notes.trim() !== 'null' ? notes.trim() : ''
-    );
+    // Execute safe database transaction
+    const insertVehicleTx = db.transaction(() => {
+      const stmt = db.prepare(`
+        INSERT INTO vehicles (user_id, vehicle_number, vehicle_type, model, manufacturing_year, purchase_date, owner_name, driver_id, status, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
 
-    const vehicleId = result.lastInsertRowid;
+      const result = stmt.run(
+        userId,
+        cleanVehicleNum,
+        validVehicleType,
+        cleanModel,
+        validYear,
+        validPurchaseDate,
+        validOwnerName,
+        validDriverId,
+        validStatus,
+        validNotes
+      );
 
-    // If driver assigned, update driver's assigned_vehicle_id
-    if (validDriverId) {
-      db.prepare('UPDATE drivers SET assigned_vehicle_id = ? WHERE id = ? AND user_id = ?').run(vehicleId, validDriverId, userId);
-    }
+      const vehicleId = result.lastInsertRowid;
 
-    logActivity(userId, 'CREATE_VEHICLE', `Added vehicle ${cleanVehicleNum} (${model.trim()})`, 'vehicle', vehicleId);
+      // Update driver assignment if driver assigned
+      if (validDriverId) {
+        db.prepare('UPDATE drivers SET assigned_vehicle_id = ? WHERE id = ? AND user_id = ?').run(vehicleId, validDriverId, userId);
+      }
+
+      return vehicleId;
+    });
+
+    const newVehicleId = insertVehicleTx();
+
+    logActivity(userId, 'CREATE_VEHICLE', `Added vehicle ${cleanVehicleNum} (${cleanModel})`, 'vehicle', newVehicleId);
 
     return res.status(201).json({
-      id: vehicleId,
+      id: newVehicleId,
       message: 'Vehicle added successfully.',
       vehicle_number: cleanVehicleNum
     });
   } catch (err) {
-    console.error('Failed to create vehicle:', err);
-    return res.status(500).json({ error: `Failed to save vehicle: ${err.message}` });
+    console.error('[Create Vehicle Error]:', err);
+    const msg = err.message || '';
+    if (msg.includes('UNIQUE constraint failed')) {
+      return res.status(409).json({ error: 'This vehicle registration number already exists in your fleet.' });
+    }
+    if (msg.includes('FOREIGN KEY constraint failed')) {
+      return res.status(400).json({ error: 'Driver assignment failed: Selected driver does not exist in your fleet.' });
+    }
+    return res.status(400).json({ error: `Unable to save vehicle: ${err.message}` });
   }
 });
 
@@ -585,30 +630,50 @@ app.put('/api/vehicles/:id', authMiddleware, (req, res) => {
   try {
     const userId = req.user.id;
     const vehicleId = req.params.id;
-    const { vehicle_number, vehicle_type, model, manufacturing_year, purchase_date, owner_name, driver_id, status, notes } = req.body;
+    const body = req.body || {};
+    const { vehicle_number, vehicle_type, model, manufacturing_year, purchase_date, owner_name, driver_id, status, notes } = body;
 
     const vehicle = db.prepare('SELECT * FROM vehicles WHERE id = ? AND user_id = ?').get(vehicleId, userId);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
 
     const cleanVehicleNum = vehicle_number ? vehicle_number.trim().replace(/\s+/g, ' ').toUpperCase() : vehicle.vehicle_number;
 
-    let validDriverId = null;
-    if (driver_id !== undefined && driver_id !== null && driver_id !== '' && driver_id !== 'undefined' && driver_id !== 'null') {
-      const parsedDriverId = parseInt(driver_id, 10);
-      if (!isNaN(parsedDriverId) && parsedDriverId > 0) {
-        const driverExists = db.prepare('SELECT id FROM drivers WHERE id = ? AND user_id = ?').get(parsedDriverId, userId);
-        if (driverExists) {
-          validDriverId = driverExists.id;
+    // Check uniqueness if number changed
+    if (cleanVehicleNum !== vehicle.vehicle_number) {
+      const dup = db.prepare(`
+        SELECT id, vehicle_number FROM vehicles 
+        WHERE user_id = ? AND id != ? AND UPPER(REPLACE(vehicle_number, ' ', '')) = UPPER(REPLACE(?, ' ', ''))
+      `).get(userId, vehicleId, cleanVehicleNum);
+      if (dup) {
+        return res.status(409).json({ error: `Vehicle registration number '${dup.vehicle_number}' is already registered in your fleet.` });
+      }
+    }
+
+    let validDriverId = vehicle.driver_id;
+    if (driver_id !== undefined) {
+      if (driver_id !== null && driver_id !== '' && driver_id !== 'null' && driver_id !== 'undefined' && driver_id !== 0 && driver_id !== '0') {
+        const parsedDriverId = parseInt(driver_id, 10);
+        if (isNaN(parsedDriverId) || parsedDriverId <= 0) {
+          return res.status(400).json({ error: 'Invalid driver selection.' });
         }
+        const driverExists = db.prepare('SELECT id FROM drivers WHERE id = ? AND user_id = ?').get(parsedDriverId, userId);
+        if (!driverExists) {
+          return res.status(400).json({ error: 'Selected driver was not found in your fleet.' });
+        }
+        validDriverId = parsedDriverId;
+      } else {
+        validDriverId = null;
       }
     }
 
     let validYear = vehicle.manufacturing_year;
     if (manufacturing_year !== undefined && manufacturing_year !== null && manufacturing_year !== '' && manufacturing_year !== 'undefined' && manufacturing_year !== 'null') {
       const parsedYear = parseInt(manufacturing_year, 10);
-      if (!isNaN(parsedYear) && parsedYear >= 1950 && parsedYear <= 2100) {
-        validYear = parsedYear;
+      const currentYear = new Date().getFullYear();
+      if (isNaN(parsedYear) || parsedYear < 1950 || parsedYear > currentYear + 2) {
+        return res.status(400).json({ error: `Manufacturing year must be between 1950 and ${currentYear + 1}` });
       }
+      validYear = parsedYear;
     } else if (manufacturing_year === null || manufacturing_year === '') {
       validYear = null;
     }
@@ -616,11 +681,20 @@ app.put('/api/vehicles/:id', authMiddleware, (req, res) => {
     let validPurchaseDate = vehicle.purchase_date;
     if (purchase_date !== undefined) {
       if (purchase_date && typeof purchase_date === 'string' && purchase_date.trim() && purchase_date.trim() !== 'undefined' && purchase_date.trim() !== 'null' && purchase_date.trim() !== 'dd-mm-yyyy') {
-        validPurchaseDate = purchase_date.trim();
+        const parsedDate = new Date(purchase_date.trim());
+        if (isNaN(parsedDate.getTime())) {
+          return res.status(400).json({ error: 'Invalid purchase date.' });
+        }
+        validPurchaseDate = purchase_date.trim().slice(0, 10);
       } else {
         validPurchaseDate = null;
       }
     }
+
+    const ALLOWED_STATUSES = ['active', 'inactive', 'maintenance'];
+    const validStatus = (status && typeof status === 'string' && ALLOWED_STATUSES.includes(status.toLowerCase().trim()))
+      ? status.toLowerCase().trim()
+      : vehicle.status;
 
     db.prepare(`
       UPDATE vehicles 
@@ -635,14 +709,14 @@ app.put('/api/vehicles/:id', authMiddleware, (req, res) => {
       validPurchaseDate,
       owner_name !== undefined ? (owner_name ? owner_name.trim() : null) : vehicle.owner_name,
       validDriverId,
-      status || vehicle.status,
+      validStatus,
       notes !== undefined ? (notes ? notes.trim() : '') : vehicle.notes,
       vehicleId,
       userId
     );
 
     // Update driver assignment
-    if (validDriverId) {
+    if (validDriverId && validDriverId !== vehicle.driver_id) {
       db.prepare('UPDATE drivers SET assigned_vehicle_id = ? WHERE id = ? AND user_id = ?').run(vehicleId, validDriverId, userId);
     }
 
@@ -651,7 +725,7 @@ app.put('/api/vehicles/:id', authMiddleware, (req, res) => {
     res.json({ message: 'Vehicle updated successfully' });
   } catch (err) {
     console.error('Failed to update vehicle:', err);
-    return res.status(500).json({ error: `Failed to update vehicle: ${err.message}` });
+    return res.status(400).json({ error: `Failed to update vehicle: ${err.message}` });
   }
 });
 
