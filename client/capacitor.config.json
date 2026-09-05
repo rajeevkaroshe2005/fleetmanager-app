@@ -1,0 +1,23 @@
+{
+  "appId": "com.fleetmanager.app",
+  "appName": "FleetManager Pro",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "plugins": {
+    "Camera": {
+      "presentationStyle": "fullscreen"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#050B14"
+    }
+  }
+}

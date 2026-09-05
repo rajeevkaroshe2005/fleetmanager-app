@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: fleetmanager-pro
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm run build:all
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: JWT_SECRET
+        generateValue: true
