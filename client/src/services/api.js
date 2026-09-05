@@ -1,7 +1,7 @@
 // Dynamic server URL resolution for web vs native mobile (Capacitor)
 export function getDefaultServerUrl() {
   if (typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.()) {
-    return 'http://10.150.152.80:5000';
+    return 'https://fleetmanager-app.onrender.com';
   }
   return '';
 }
