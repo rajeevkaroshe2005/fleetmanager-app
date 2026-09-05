@@ -35,6 +35,28 @@ app.get('/api/health', (req, res) => {
   }
 });
 
+// Direct APK Download Endpoints
+const handleApkDownload = (req, res) => {
+  const candidatePaths = [
+    path.join(__dirname, '..', 'FleetManagerPro.apk'),
+    path.join(__dirname, '..', 'client', 'dist', 'FleetManagerPro.apk'),
+    path.join(__dirname, '..', 'client', 'public', 'FleetManagerPro.apk'),
+    path.join(process.cwd(), 'FleetManagerPro.apk'),
+    path.join(process.cwd(), 'client', 'dist', 'FleetManagerPro.apk')
+  ];
+
+  const apkFile = candidatePaths.find(p => fs.existsSync(p));
+  if (apkFile) {
+    res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+    return res.download(apkFile, 'FleetManagerPro.apk');
+  }
+  return res.status(404).json({ error: 'FleetManagerPro.apk not found on server' });
+};
+
+app.get('/download/apk', handleApkDownload);
+app.get('/FleetManagerPro.apk', handleApkDownload);
+app.get('/api/apk', handleApkDownload);
+
 // Configure Multer for secure file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

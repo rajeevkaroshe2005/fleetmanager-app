@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Truck, Lock, Mail, User, Phone, Building, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Truck, Lock, Mail, User, Phone, Building, AlertCircle, Eye, EyeOff, ShieldCheck, Smartphone, Download } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { api } from '../services/api';
 
@@ -273,6 +273,22 @@ export function AuthView({ onAuthSuccess }) {
               </div>
             </form>
           )}
+
+          {/* Direct APK Download Banner */}
+          <div className="mt-6 pt-5 border-t border-white/10 flex flex-col items-center gap-2">
+            <a 
+              href="/download/apk" 
+              download="FleetManagerPro.apk"
+              className="w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 hover:text-white transition-all text-xs font-bold shadow-sm group"
+            >
+              <Smartphone className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <span>Download Android App (.APK)</span>
+              <Download className="w-3.5 h-3.5 text-emerald-400 ml-auto" />
+            </a>
+            <p className="text-[11px] text-slate-400 text-center">
+              Direct install for Android &bull; Connects 24/7 over 4G/5G
+            </p>
+          </div>
         </div>
       </div>
     </div>
