@@ -116,42 +116,44 @@ export function DriversView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Commercial Drivers ({drivers.length})
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Manage commercial drivers, vehicle assignments, and driving licence expiry reminders.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Manage commercial drivers, truck assignments, contact info, and driving licence expiry status.
           </p>
         </div>
 
         <button 
           onClick={handleOpenAdd} 
-          className="btn-primary text-xs sm:text-sm self-start sm:self-auto shadow-lg shadow-blue-600/30"
+          className="btn-primary h-11 px-5 text-sm font-bold self-start md:self-auto shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
         >
-          <Plus className="w-4 h-4" /> Add Driver
+          <Plus className="w-4 h-4 mr-1" /> Add Driver
         </button>
       </div>
 
       {/* Drivers Cards Grid */}
       {drivers.length === 0 ? (
-        <div className="glass-panel p-12 text-center text-slate-400 space-y-3">
-          <Users className="w-12 h-12 mx-auto text-slate-500 opacity-60" />
+        <div className="glass-panel p-12 text-center text-slate-400 space-y-3 bg-[#0B1528] border-white/[0.08]">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto text-slate-400">
+            <Users className="w-7 h-7" />
+          </div>
           <h3 className="text-base font-bold text-white">No commercial drivers registered yet</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             Add drivers to assign them to vehicles and monitor Driving Licence renewals automatically.
           </p>
-          <button onClick={handleOpenAdd} className="btn-primary text-xs mt-2">
+          <button onClick={handleOpenAdd} className="btn-primary text-xs mt-2 font-bold px-4 py-2">
             + Add First Driver
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {drivers.map((driver) => (
-            <div key={driver.id} className="glass-card p-5 flex flex-col justify-between space-y-4 hover:border-blue-500/40 transition-all group">
+            <div key={driver.id} className="glass-card p-5 flex flex-col justify-between space-y-4 hover:border-blue-500/40 transition-all group bg-[#0B1528] border-white/[0.08]">
               <div>
                 {/* Driver Top Info */}
                 <div className="flex items-start justify-between gap-3">

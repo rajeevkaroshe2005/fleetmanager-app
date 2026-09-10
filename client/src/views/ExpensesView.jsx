@@ -123,23 +123,23 @@ export function ExpensesView({ vehicles = [], onSelectVehicle }) {
   const totalExpenseSum = expenses.reduce((acc, exp) => acc + (exp.amount || 0), 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Fleet Expenses & Fuel Tracking
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Monitor diesel expenses, toll slips, taxes, tyre upkeep, and driver allowances.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Monitor diesel expenses, toll slips, taxes, tyre upkeep, and driver allowances in real time.
           </p>
         </div>
 
         <button 
           onClick={() => handleOpenAdd()} 
-          className="btn-primary text-xs sm:text-sm self-start sm:self-auto shadow-lg shadow-blue-600/30"
+          className="btn-primary h-11 px-5 text-sm font-bold self-start md:self-auto shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
         >
-          <Plus className="w-4 h-4" /> Add Expense
+          <Plus className="w-4 h-4 mr-1" /> Add Expense
         </button>
       </div>
 
@@ -195,21 +195,23 @@ export function ExpensesView({ vehicles = [], onSelectVehicle }) {
 
       {/* Expenses Table/Cards */}
       {expenses.length === 0 ? (
-        <div className="glass-panel p-12 text-center text-slate-400 space-y-3">
-          <IndianRupee className="w-12 h-12 mx-auto text-slate-500 opacity-60" />
+        <div className="glass-panel p-12 text-center text-slate-400 space-y-3 bg-[#0B1528] border-white/[0.08]">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto text-slate-400">
+            <IndianRupee className="w-7 h-7" />
+          </div>
           <h3 className="text-base font-bold text-white">No expenses recorded</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             Log fuel receipts, toll payments, and repairs to calculate cost per vehicle.
           </p>
-          <button onClick={() => handleOpenAdd()} className="btn-primary text-xs mt-2">
+          <button onClick={() => handleOpenAdd()} className="btn-primary text-xs mt-2 font-bold px-4 py-2">
             + Record First Expense
           </button>
         </div>
       ) : (
-        <div className="glass-panel overflow-hidden">
+        <div className="glass-panel overflow-hidden bg-[#0B1528] border-white/[0.08]">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-white/5 border-b border-white/10 text-slate-400 uppercase font-bold text-[10px] tracking-wider">
+              <thead className="bg-white/[0.03] border-b border-white/[0.08] text-slate-400 uppercase font-bold text-[10px] tracking-wider">
                 <tr>
                   <th className="p-4">Vehicle</th>
                   <th className="p-4">Category</th>
@@ -220,9 +222,9 @@ export function ExpensesView({ vehicles = [], onSelectVehicle }) {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-white/[0.04]">
                 {expenses.map((exp) => (
-                  <tr key={exp.id} className="hover:bg-white/5 transition-colors">
+                  <tr key={exp.id} className="hover:bg-white/[0.03] transition-colors">
                     <td className="p-4 font-mono font-bold text-white whitespace-nowrap">
                       <NumberPlate number={exp.vehicle_number} />
                     </td>

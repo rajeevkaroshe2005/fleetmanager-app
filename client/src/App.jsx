@@ -184,7 +184,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07111F] text-slate-100 flex font-sans antialiased selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#050A14] text-slate-100 flex font-sans antialiased selection:bg-blue-600 selection:text-white">
       {/* Left Deep Navy Glass Sidebar (Fixed on Desktop & Drawer on Mobile) */}
       <Sidebar 
         currentTab={currentTab}
@@ -218,8 +218,8 @@ export function App() {
           onRefreshNotifications={loadFleetData}
         />
 
-        {/* Scrollable Page Body with Safe Bottom Padding */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-28 lg:pb-12 max-w-7xl w-full mx-auto overflow-x-hidden">
+        {/* Scrollable Page Body with Generous SaaS Spacing */}
+        <main className="flex-1 px-5 sm:px-8 lg:px-10 py-6 sm:py-8 lg:py-9 pb-28 lg:pb-12 max-w-[1440px] w-full mx-auto overflow-x-hidden">
           {currentTab === 'dashboard' && (
             <DashboardView 
               stats={stats}

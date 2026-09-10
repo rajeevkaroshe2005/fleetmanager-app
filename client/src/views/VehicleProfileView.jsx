@@ -142,35 +142,35 @@ export function VehicleProfileView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Top Back Navigation Bar */}
       <div className="flex items-center justify-between gap-4">
         <button 
           onClick={onBack}
-          className="btn-secondary text-xs py-1.5 px-3"
+          className="btn-secondary text-xs py-2 px-4 font-semibold inline-flex items-center gap-2"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Vehicles
         </button>
 
         <button 
           onClick={handleDeleteVehicle}
-          className="btn-danger text-xs py-1.5 px-3"
+          className="btn-danger text-xs py-2 px-4 font-semibold inline-flex items-center gap-2"
         >
           <Trash2 className="w-3.5 h-3.5" /> Delete Truck
         </button>
       </div>
 
       {/* Vehicle Hero Header Card */}
-      <div className="glass-panel p-6 sm:p-7 space-y-6">
+      <div className="glass-panel p-6 sm:p-8 space-y-7 bg-[#0B1528] border-white/[0.08]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold border border-blue-400/30 shadow-lg shrink-0">
-              <Truck className="w-7 h-7" />
+          <div className="flex items-center gap-4 sm:gap-5">
+            <div className="w-16 h-16 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold border border-blue-400/30 shadow-lg shadow-blue-500/15 shrink-0">
+              <Truck className="w-8 h-8" />
             </div>
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <NumberPlate number={vehicle.vehicle_number} />
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
                   vehicle.status === 'active' 
                     ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' 
                     : 'bg-slate-500/15 text-slate-400 border-slate-500/30'
@@ -178,10 +178,10 @@ export function VehicleProfileView({
                   {vehicle.status === 'active' ? 'Active Fleet' : 'Inactive'}
                 </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-1.5">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-white mt-2">
                 {vehicle.model}
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">
                 {vehicle.vehicle_type || 'Commercial Vehicle'} · Manufacturing Year: {vehicle.manufacturing_year || 'N/A'}
               </p>
             </div>
@@ -190,37 +190,37 @@ export function VehicleProfileView({
           <div className="flex items-center gap-3">
             <button 
               onClick={() => onOpenAddDoc(vehicle.id)}
-              className="btn-primary text-xs sm:text-sm font-bold shadow-lg shadow-blue-600/30"
+              className="btn-primary h-11 px-5 text-sm font-bold shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
             >
-              <Plus className="w-4 h-4" /> Add Document
+              <Plus className="w-4 h-4 mr-1" /> Add Document
             </button>
           </div>
         </div>
 
         {/* Quick KPI Stat Badges Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/8 text-xs">
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-400 block text-[11px]">Total Documents</span>
-            <span className="text-lg font-extrabold text-white mt-0.5 block">{documents.length}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-5 border-t border-white/[0.08] text-xs">
+          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <span className="text-slate-400 block text-xs font-semibold">Total Documents</span>
+            <span className="text-xl font-extrabold text-white mt-1 block">{documents.length}</span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-400 block text-[11px]">Compliance Status</span>
-            <span className={`text-sm font-extrabold mt-0.5 block ${
+          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <span className="text-slate-400 block text-xs font-semibold">Compliance Status</span>
+            <span className={`text-base font-extrabold mt-1 block ${
               expiredDocsCount > 0 ? 'text-rose-400' : expiringDocsCount > 0 ? 'text-amber-400' : 'text-emerald-400'
             }`}>
               {expiredDocsCount > 0 ? `${expiredDocsCount} Expired` : expiringDocsCount > 0 ? `${expiringDocsCount} Expiring` : 'All Valid'}
             </span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-400 block text-[11px]">Service Logs</span>
-            <span className="text-lg font-extrabold text-white mt-0.5 block">{maintenance.length}</span>
+          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <span className="text-slate-400 block text-xs font-semibold">Service Logs</span>
+            <span className="text-xl font-extrabold text-white mt-1 block">{maintenance.length}</span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-400 block text-[11px]">Total Recorded Expenses</span>
-            <span className="text-lg font-extrabold text-purple-400 mt-0.5 block">
+          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+            <span className="text-slate-400 block text-xs font-semibold">Recorded Expenses</span>
+            <span className="text-xl font-extrabold text-purple-400 mt-1 block">
               ₹{expenses.reduce((sum, e) => sum + (e.amount || 0), 0).toLocaleString('en-IN')}
             </span>
           </div>

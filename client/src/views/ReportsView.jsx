@@ -83,32 +83,32 @@ export function ReportsView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Fleet Analytics & Compliance Reports
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Export official fleet audits, compliance summaries, and operational expenditures.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Export official fleet audits, compliance summaries, and operational expenditures for review.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+        <div className="flex items-center gap-3 self-start md:self-auto">
           <button 
             onClick={handlePrint} 
-            className="btn-secondary text-xs py-2 px-3"
+            className="btn-secondary h-11 px-4 text-xs font-semibold rounded-xl"
             title="Print or Save as PDF"
           >
-            <Printer className="w-4 h-4" /> Print / PDF
+            <Printer className="w-4 h-4 mr-1" /> Print / PDF
           </button>
           <button 
             onClick={handleExportCSV} 
-            className="btn-primary text-xs py-2 px-3 shadow-lg shadow-blue-600/30"
+            className="btn-primary h-11 px-5 text-sm font-bold shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
             title="Export as CSV spreadsheet"
           >
-            <Download className="w-4 h-4" /> Export CSV
+            <Download className="w-4 h-4 mr-1" /> Export CSV
           </button>
         </div>
       </div>
@@ -185,8 +185,8 @@ export function ReportsView({
 
       {/* Report Content Table */}
       {reportType === 'compliance' ? (
-        <div className="glass-panel overflow-hidden space-y-4">
-          <div className="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
+        <div className="glass-panel overflow-hidden space-y-4 bg-[#0B1528] border-white/[0.08]">
+          <div className="p-4 bg-white/[0.03] border-b border-white/[0.08] flex items-center justify-between">
             <div>
               <h3 className="text-sm font-bold text-white">Full Compliance Registry</h3>
               <p className="text-[11px] text-slate-400">Detailed validity schedule for all commercial vehicle permits, RC, and insurance</p>
@@ -196,7 +196,7 @@ export function ReportsView({
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-white/5 text-slate-400 uppercase font-bold text-[10px] tracking-wider">
+              <thead className="bg-white/[0.02] text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-white/[0.06]">
                 <tr>
                   <th className="p-3.5">Truck Plate</th>
                   <th className="p-3.5">Document Type</th>
@@ -207,7 +207,7 @@ export function ReportsView({
                   <th className="p-3.5 text-right">Remaining</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-white/[0.04]">
                 {documents.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="p-8 text-center text-slate-400">

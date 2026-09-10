@@ -97,7 +97,7 @@ export function Navbar({
     : user?.name ? user.name.slice(0, 2).toUpperCase() : 'RT';
 
   return (
-    <header className="sticky top-0 z-20 px-4 sm:px-6 lg:px-8 py-3.5 bg-[#07111F]/90 backdrop-blur-xl border-b border-white/8 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-20 px-4 sm:px-6 lg:px-8 py-3.5 bg-[#050A14]/90 backdrop-blur-xl border-b border-white/[0.06] flex items-center justify-between gap-4">
       {/* Left: Mobile Drawer Button & Current Page Heading */}
       <div className="flex items-center gap-3 min-w-0">
         <button 

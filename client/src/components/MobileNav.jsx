@@ -13,7 +13,7 @@ export function MobileNav({ currentTab, onNavigate, stats }) {
   ];
 
   return (
-    <nav className="mobile-nav-glass lg:hidden">
+    <nav className="mobile-nav-glass lg:!hidden">
       {items.map((item) => {
         const Icon = item.icon;
         const isActive = currentTab === item.id || (item.id === 'documents' && currentTab === 'reminders');

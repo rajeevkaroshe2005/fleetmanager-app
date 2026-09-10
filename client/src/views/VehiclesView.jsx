@@ -52,23 +52,23 @@ export function VehiclesView({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Commercial Fleet ({vehicles.length})
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Manage your trucks, assigned drivers, and document validity in one place.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Real-time commercial truck register, driver assignments, and vehicle compliance status.
           </p>
         </div>
 
         <button 
           onClick={onOpenAddVehicle}
-          className="btn-primary text-xs sm:text-sm self-start sm:self-auto shadow-lg shadow-blue-600/30"
+          className="btn-primary h-11 px-5 text-sm font-bold self-start md:self-auto shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
         >
-          <Plus className="w-4 h-4" /> Add Vehicle
+          <Plus className="w-4 h-4 mr-1" /> Add Vehicle
         </button>
       </div>
 
@@ -76,13 +76,13 @@ export function VehiclesView({
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {/* Search Bar */}
         <div className="flex-1 relative max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
           <input 
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search vehicle plate (e.g. MH 09), model, driver..."
-            className="form-input pl-9 h-10 text-xs sm:text-sm"
+            placeholder="Search plate (e.g. MH 09), model, driver..."
+            className="form-input pl-10 h-11 text-xs sm:text-sm rounded-xl"
           />
         </div>
 
@@ -131,24 +131,26 @@ export function VehiclesView({
 
       {/* Empty State */}
       {filteredVehicles.length === 0 ? (
-        <div className="glass-panel p-12 text-center text-slate-400 space-y-3">
-          <Truck className="w-12 h-12 mx-auto text-slate-500 opacity-60" />
+        <div className="glass-panel p-12 text-center text-slate-400 space-y-3 bg-[#0B1528] border-white/[0.08]">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto text-slate-400">
+            <Truck className="w-7 h-7" />
+          </div>
           <h3 className="text-base font-bold text-white">No vehicles found</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             {searchQuery 
-              ? `No commercial vehicles matched "${searchQuery}". Try clearing search or filters.` 
-              : 'Add your first commercial truck to start managing vehicle documents, reminders and expenses.'}
+              ? `No commercial vehicles matched "${searchQuery}". Try adjusting your search query or status filter.` 
+              : 'Add your first commercial truck to begin tracking insurance, fitness, permit & PUCC documents.'}
           </p>
           <button 
             onClick={onOpenAddVehicle} 
-            className="btn-primary text-xs mt-2"
+            className="btn-primary text-xs mt-2 font-bold px-4 py-2"
           >
             + Add Vehicle
           </button>
         </div>
       ) : viewMode === 'grid' ? (
-        /* GRID VIEW (Glass Cards) */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        /* GRID VIEW (Unlumen Glass Cards) */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVehicles.map((vehicle) => {
             const hasExpired = vehicle.overallDocStatus === 'EXPIRED';
             const hasExpiring = vehicle.overallDocStatus === 'EXPIRING_SOON';
@@ -157,12 +159,12 @@ export function VehiclesView({
               <div 
                 key={vehicle.id}
                 onClick={() => onSelectVehicle(vehicle.id)}
-                className="glass-card p-5 cursor-pointer hover:border-blue-500/40 hover:-translate-y-1 transition-all flex flex-col justify-between space-y-4 group"
+                className="glass-card p-6 cursor-pointer hover:border-blue-500/40 hover:-translate-y-1.5 transition-all flex flex-col justify-between space-y-5 group bg-[#0B1528] border-white/[0.08]"
               >
                 {/* Card Top: Number Plate, Status & Type */}
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start justify-between gap-3">
                   <NumberPlate number={vehicle.vehicle_number} />
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                  <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
                     vehicle.status === 'active' 
                       ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' 
                       : 'bg-slate-500/15 text-slate-400 border-slate-500/30'
@@ -176,44 +178,52 @@ export function VehiclesView({
                   <h3 className="font-extrabold text-base text-white group-hover:text-blue-400 transition-colors">
                     {vehicle.model}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">{vehicle.vehicle_type || 'Commercial Truck'}</p>
+                  <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                    <span>{vehicle.vehicle_type || 'Commercial Truck'}</span>
+                    {vehicle.manufacturing_year && (
+                      <>
+                        <span className="text-slate-600">•</span>
+                        <span>Year {vehicle.manufacturing_year}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Driver & Documents Health */}
-                <div className="p-3 rounded-xl bg-white/5 border border-white/5 space-y-2 text-xs">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-blue-400" /> Driver:
+                <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2.5 text-xs">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400 flex items-center gap-2">
+                      <User className="w-3.5 h-3.5 text-blue-400 shrink-0" /> Driver:
                     </span>
-                    <span className="font-semibold text-slate-200">
+                    <span className="font-semibold text-slate-200 truncate max-w-[160px]">
                       {vehicle.driver_name || 'Unassigned'}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] pt-1 border-t border-white/5">
-                    <span className="text-slate-400 flex items-center gap-1.5">
-                      <FileText className="w-3.5 h-3.5 text-cyan-400" /> Compliance:
+                  <div className="flex items-center justify-between text-xs pt-2 border-t border-white/[0.06]">
+                    <span className="text-slate-400 flex items-center gap-2">
+                      <FileText className="w-3.5 h-3.5 text-cyan-400 shrink-0" /> Compliance:
                     </span>
                     {hasExpired ? (
-                      <span className="text-rose-400 font-bold flex items-center gap-1">
-                        <XCircle className="w-3 h-3" /> Expired Doc
+                      <span className="text-rose-400 font-bold flex items-center gap-1.5">
+                        <XCircle className="w-3.5 h-3.5" /> Expired Doc
                       </span>
                     ) : hasExpiring ? (
-                      <span className="text-amber-400 font-bold flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3" /> Expiring Soon
+                      <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5" /> Expiring Soon
                       </span>
                     ) : (
-                      <span className="text-emerald-400 font-bold flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> All Valid
+                      <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> All Valid
                       </span>
                     )}
                   </div>
                 </div>
 
                 {/* Card Footer: View Details CTA */}
-                <div className="pt-2 border-t border-white/8 flex items-center justify-between text-xs text-slate-400 group-hover:text-blue-400 font-semibold transition-colors">
+                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400 group-hover:text-blue-400 font-bold transition-colors">
                   <span>View Full Profile</span>
-                  <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform" />
                 </div>
               </div>
             );
@@ -221,35 +231,35 @@ export function VehiclesView({
         </div>
       ) : (
         /* LIST VIEW (Responsive Table) */
-        <div className="glass-panel overflow-hidden">
+        <div className="glass-panel overflow-hidden bg-[#0B1528] border-white/[0.08]">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-white/5 border-b border-white/10 text-slate-400 uppercase font-bold text-[10px] tracking-wider">
+              <thead className="bg-white/[0.03] border-b border-white/[0.08] text-slate-400 uppercase font-bold text-[10px] tracking-wider">
                 <tr>
-                  <th className="p-4">Vehicle Number</th>
+                  <th className="p-4">Vehicle Plate</th>
                   <th className="p-4">Model & Type</th>
-                  <th className="p-4">Driver</th>
+                  <th className="p-4">Assigned Driver</th>
                   <th className="p-4">Compliance Status</th>
                   <th className="p-4">Status</th>
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-white/[0.04]">
                 {filteredVehicles.map((vehicle) => (
                   <tr 
                     key={vehicle.id}
                     onClick={() => onSelectVehicle(vehicle.id)}
-                    className="hover:bg-white/5 cursor-pointer transition-colors"
+                    className="hover:bg-white/[0.03] cursor-pointer transition-colors"
                   >
                     <td className="p-4 font-mono font-bold text-white whitespace-nowrap">
                       <NumberPlate number={vehicle.vehicle_number} />
                     </td>
                     <td className="p-4">
-                      <span className="font-bold text-white block">{vehicle.model}</span>
+                      <span className="font-bold text-white block text-xs">{vehicle.model}</span>
                       <span className="text-slate-400 text-[11px]">{vehicle.vehicle_type}</span>
                     </td>
                     <td className="p-4 text-slate-300">
-                      {vehicle.driver_name || 'Unassigned'}
+                      {vehicle.driver_name || <span className="text-slate-500 italic">Unassigned</span>}
                     </td>
                     <td className="p-4">
                       {vehicle.overallDocStatus === 'EXPIRED' ? (
@@ -261,7 +271,11 @@ export function VehiclesView({
                       )}
                     </td>
                     <td className="p-4">
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                        vehicle.status === 'active' 
+                          ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' 
+                          : 'bg-slate-500/15 text-slate-400 border-slate-500/30'
+                      }`}>
                         {vehicle.status || 'Active'}
                       </span>
                     </td>
@@ -271,7 +285,7 @@ export function VehiclesView({
                           e.stopPropagation();
                           onSelectVehicle(vehicle.id);
                         }}
-                        className="btn-secondary text-xs py-1 px-2.5"
+                        className="btn-secondary text-xs py-1 px-3"
                       >
                         Inspect
                       </button>

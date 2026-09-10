@@ -123,23 +123,23 @@ export function MaintenanceView({ vehicles = [], onSelectVehicle }) {
   const upcomingCount = records.filter(r => r.next_service_date && new Date(r.next_service_date) >= new Date()).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Maintenance & Service History
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Track periodic servicing, tyre changes, and workshop costs across your fleet.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Track periodic servicing, oil replacements, tyre rotations, and workshop costs across your fleet.
           </p>
         </div>
 
         <button 
           onClick={() => handleOpenAdd()} 
-          className="btn-primary text-xs sm:text-sm self-start sm:self-auto shadow-lg shadow-blue-600/30"
+          className="btn-primary h-11 px-5 text-sm font-bold self-start md:self-auto shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
         >
-          <Plus className="w-4 h-4" /> Log Service
+          <Plus className="w-4 h-4 mr-1" /> Log Maintenance
         </button>
       </div>
 
@@ -183,13 +183,15 @@ export function MaintenanceView({ vehicles = [], onSelectVehicle }) {
 
       {/* Records List */}
       {records.length === 0 ? (
-        <div className="glass-panel p-12 text-center text-slate-400 space-y-3">
-          <Wrench className="w-12 h-12 mx-auto text-slate-500 opacity-60" />
+        <div className="glass-panel p-12 text-center text-slate-400 space-y-3 bg-[#0B1528] border-white/[0.08]">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto text-slate-400">
+            <Wrench className="w-7 h-7" />
+          </div>
           <h3 className="text-base font-bold text-white">No maintenance records found</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Log periodic oil changes, tyre replacements, and fitness repairs to track upkeep costs.
+            Log periodic oil changes, tyre replacements, and fitness repairs to track vehicle upkeep costs.
           </p>
-          <button onClick={() => handleOpenAdd()} className="btn-primary text-xs mt-2">
+          <button onClick={() => handleOpenAdd()} className="btn-primary text-xs mt-2 font-bold px-4 py-2">
             + Log First Service
           </button>
         </div>
@@ -198,7 +200,7 @@ export function MaintenanceView({ vehicles = [], onSelectVehicle }) {
           {records.map((r) => (
             <div 
               key={r.id}
-              className="glass-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-blue-500 hover:bg-white/8 transition-all"
+              className="glass-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 border-l-blue-500 hover:bg-white/[0.04] transition-all bg-[#0B1528] border-white/[0.08]"
             >
               <div className="flex items-start gap-4 min-w-0">
                 <div className="shrink-0 mt-0.5">
@@ -217,7 +219,7 @@ export function MaintenanceView({ vehicles = [], onSelectVehicle }) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/5">
+              <div className="flex items-center justify-between md:justify-end gap-5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/[0.06]">
                 <div className="text-left md:text-right">
                   <span className="text-sm sm:text-base font-extrabold text-white block">
                     ₹{r.amount ? r.amount.toLocaleString('en-IN') : '0'}

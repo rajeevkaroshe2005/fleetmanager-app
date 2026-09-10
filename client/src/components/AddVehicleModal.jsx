@@ -78,23 +78,23 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
   };
 
   return (
-    <div className="glass-modal-backdrop">
-      <div className="glass-modal-box max-w-2xl w-full p-0 overflow-hidden">
+    <div className="glass-modal-backdrop p-3 sm:p-4">
+      <div className="glass-modal-box max-w-2xl w-full p-0 overflow-hidden shadow-2xl border border-white/[0.12] bg-[#0B1528] rounded-2xl">
         {/* Sticky Header */}
-        <div className="p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-white/5 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold border border-blue-500/30 shadow-md">
+        <div className="p-5 sm:p-6 border-b border-white/[0.08] flex items-center justify-between bg-[#081020] shrink-0">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold border border-blue-500/30 shadow-md shrink-0">
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-extrabold text-white">Add New Commercial Vehicle</h2>
-              <p className="text-xs text-slate-400">Register a new truck in your fleet to track compliance</p>
+              <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight">Register Commercial Vehicle</h2>
+              <p className="text-xs text-slate-400 mt-0.5">Add vehicle details to track insurance, fitness, permit & PUCC compliance</p>
             </div>
           </div>
           <button 
             type="button"
             onClick={handleClose} 
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -102,17 +102,17 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
 
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
-          <div className="p-6 sm:p-7 space-y-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+          <div className="p-5 sm:p-6 space-y-5 overflow-y-auto max-h-[calc(88vh-140px)]">
             {error && (
               <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/35 text-rose-300 text-xs flex items-center gap-2.5">
                 <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-                <span>{error}</span>
+                <span className="font-medium">{error}</span>
               </div>
             )}
 
             {/* Section 1: Identification */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-300 pb-1 border-b border-white/5">
+            <div className="p-4 sm:p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-4">
+              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-300 pb-2 border-b border-white/[0.06]">
                 <Truck className="w-3.5 h-3.5 text-blue-400" />
                 <span>Vehicle Identification</span>
               </div>
@@ -131,7 +131,7 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
                     required
                     autoFocus
                   />
-                  <p className="text-[11px] text-slate-500">Official RTO commercial plate number.</p>
+                  <p className="text-[11px] text-slate-400">Official commercial plate number (RTO format).</p>
                 </div>
 
                 <div className="space-y-1.5">
@@ -150,7 +150,7 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
                     <option value="Tipper / Dumper">Tipper / Dumper</option>
                     <option value="Mini Truck / Pickup">Mini Truck / Pickup</option>
                   </select>
-                  <p className="text-[11px] text-slate-500">Configuration of commercial transport.</p>
+                  <p className="text-[11px] text-slate-400">Classification of commercial transport.</p>
                 </div>
               </div>
 
@@ -170,8 +170,8 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
             </div>
 
             {/* Section 2: Specifications & Purchase */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-300 pb-1 border-b border-white/5">
+            <div className="p-4 sm:p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-4">
+              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-300 pb-2 border-b border-white/[0.06]">
                 <Calendar className="w-3.5 h-3.5 text-blue-400" />
                 <span>Specifications & Ownership</span>
               </div>
@@ -219,8 +219,8 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
             </div>
 
             {/* Section 3: Driver & Assignment */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-300 pb-1 border-b border-white/5">
+            <div className="p-4 sm:p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-4">
+              <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-300 pb-2 border-b border-white/[0.06]">
                 <User className="w-3.5 h-3.5 text-blue-400" />
                 <span>Driver Assignment & Operational Notes</span>
               </div>
@@ -241,7 +241,7 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
                     </option>
                   ))}
                 </select>
-                <p className="text-[11px] text-slate-500">You can assign or switch drivers at any time.</p>
+                <p className="text-[11px] text-slate-400">Can be assigned or reassigned later at any time.</p>
               </div>
 
               <div className="space-y-1.5">
@@ -260,7 +260,7 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
           </div>
 
           {/* Sticky Action Footer */}
-          <div className="p-4 sm:p-5 border-t border-white/10 bg-white/5 flex items-center justify-end gap-3 shrink-0">
+          <div className="p-4 sm:p-5 border-t border-white/[0.08] bg-[#070E1C] flex items-center justify-end gap-3 shrink-0">
             <button 
               type="button" 
               onClick={handleClose} 
@@ -273,7 +273,7 @@ export function AddVehicleModal({ isOpen, onClose, drivers = [], onSuccess }) {
               disabled={loading} 
               className="btn-primary text-xs sm:text-sm px-5 font-bold"
             >
-              {loading ? 'Adding Vehicle...' : '+ Save Vehicle'}
+              {loading ? 'Saving Vehicle...' : '+ Save Vehicle'}
             </button>
           </div>
         </form>

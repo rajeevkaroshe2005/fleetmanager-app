@@ -67,24 +67,24 @@ export function ExpiryRemindersView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-            <Bell className="w-7 h-7 text-amber-400" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+            <Bell className="w-8 h-8 text-amber-400" />
             Expiry Radar & Automated Reminders
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Automated alerts active at strictly <strong className="text-amber-400">2 days</strong> and <strong className="text-orange-400">1 day</strong> before renewal deadlines.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Proactive RTO compliance alerts active strictly at <strong className="text-amber-400">2 days</strong> and <strong className="text-orange-400">1 day</strong> before renewal deadlines.
           </p>
         </div>
 
         <button 
           onClick={() => onOpenAddDoc()} 
-          className="btn-primary text-xs sm:text-sm self-start sm:self-auto shadow-lg shadow-blue-600/30"
+          className="btn-primary h-11 px-5 text-sm font-bold self-start md:self-auto shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
         >
-          <Plus className="w-4 h-4" /> Upload Document
+          <Plus className="w-4 h-4 mr-1" /> Upload Document
         </button>
       </div>
 
@@ -186,17 +186,19 @@ export function ExpiryRemindersView({
 
       {/* Reminders List */}
       {filteredList.length === 0 ? (
-        <div className="glass-panel p-12 text-center text-slate-400 space-y-3">
-          <CheckCircle2 className="w-12 h-12 mx-auto text-emerald-400 opacity-80" />
+        <div className="glass-panel p-12 text-center text-slate-400 space-y-3 bg-[#0B1528] border-white/[0.08]">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto text-emerald-400">
+            <CheckCircle2 className="w-7 h-7 opacity-90" />
+          </div>
           <h3 className="text-base font-bold text-white">No pending reminders in this view!</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             {filter === 'URGENT' 
-              ? 'Great news! All vehicle documents and driver licences are valid and beyond the 2-day reminder threshold.'
+              ? 'Great news! All vehicle documents and driver licences are valid and outside the 2-day reminder threshold.'
               : 'No documents match the selected filter category.'}
           </p>
           <button 
             onClick={() => setFilter('ALL')} 
-            className="btn-secondary text-xs mt-2"
+            className="btn-secondary text-xs mt-2 font-semibold px-4 py-2"
           >
             View All Fleet Documents
           </button>
@@ -215,7 +217,7 @@ export function ExpiryRemindersView({
               <div 
                 key={doc.id}
                 onClick={() => onSelectDocument(doc)}
-                className={`glass-card p-4 sm:p-5 cursor-pointer hover:bg-white/8 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 ${borderAccent} group`}
+                className={`glass-card p-4 sm:p-5 cursor-pointer hover:bg-white/[0.04] transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 border-l-4 ${borderAccent} group bg-[#0B1528] border-white/[0.08]`}
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="shrink-0">
@@ -235,7 +237,7 @@ export function ExpiryRemindersView({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/5">
+                <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/[0.06]">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();

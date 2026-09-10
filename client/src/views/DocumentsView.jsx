@@ -73,85 +73,85 @@ export function DocumentsView({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-1">
+        <div className="space-y-1">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Compliance & Document Expiry
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Track RTO documents with automated <strong className="text-amber-400">2-day</strong> and <strong className="text-orange-400">1-day</strong> renewal reminders.
+          <p className="text-sm text-slate-400 max-w-xl">
+            Track commercial vehicle papers with strict automated <strong className="text-amber-400">2-day</strong> and <strong className="text-orange-400">1-day</strong> renewal reminders.
           </p>
         </div>
 
         <button 
           onClick={() => onOpenAddDoc()} 
-          className="btn-primary text-xs sm:text-sm self-start sm:self-auto shadow-lg shadow-blue-600/30"
+          className="btn-primary h-11 px-5 text-sm font-bold self-start md:self-auto shadow-lg shadow-blue-600/25 rounded-xl shrink-0"
         >
-          <Plus className="w-4 h-4" /> Add Document
+          <Plus className="w-4 h-4 mr-1" /> Add Document
         </button>
       </div>
 
       {/* Top Statistics Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <button
           onClick={() => setActiveTab('ALL')}
-          className={`glass-card p-4 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[90px] ${
+          className={`glass-card p-5 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[100px] ${
             activeTab === 'ALL' ? 'border-blue-500 ring-2 ring-blue-500/30 bg-blue-500/15' : 'hover:border-white/20'
           }`}
         >
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Docs</span>
-          <span className="text-2xl sm:text-3xl font-extrabold text-white mt-1 block">{documents.length}</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">Total Docs</span>
+          <span className="text-3xl font-extrabold text-white mt-1 block">{documents.length}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('EXPIRED')}
-          className={`glass-card p-4 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[90px] ${
+          className={`glass-card p-5 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[100px] ${
             activeTab === 'EXPIRED' ? 'border-rose-500 ring-2 ring-rose-500/30 bg-rose-500/20' : 'hover:border-rose-500/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-400">Expired</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-rose-400">Expired</span>
             {expiredDocs.length > 0 && <span className="pulse-dot bg-rose-500"></span>}
           </div>
-          <span className="text-2xl sm:text-3xl font-extrabold text-rose-400 mt-1 block">{expiredDocs.length}</span>
+          <span className="text-3xl font-extrabold text-rose-400 mt-1 block">{expiredDocs.length}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('TOMORROW')}
-          className={`glass-card p-4 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[90px] ${
+          className={`glass-card p-5 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[100px] ${
             activeTab === 'TOMORROW' ? 'border-orange-500 ring-2 ring-orange-500/30 bg-orange-500/20' : 'hover:border-orange-500/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-orange-400">Tomorrow</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-orange-400">Tomorrow</span>
             {tomorrowDocs.length > 0 && <span className="pulse-dot bg-orange-500"></span>}
           </div>
-          <span className="text-2xl sm:text-3xl font-extrabold text-orange-400 mt-1 block">{tomorrowDocs.length}</span>
+          <span className="text-3xl font-extrabold text-orange-400 mt-1 block">{tomorrowDocs.length}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('TWO_DAYS')}
-          className={`glass-card p-4 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[90px] ${
+          className={`glass-card p-5 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[100px] ${
             activeTab === 'TWO_DAYS' ? 'border-amber-500 ring-2 ring-amber-500/30 bg-amber-500/20' : 'hover:border-amber-500/40'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">In 2 Days</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-400">In 2 Days</span>
             {twoDaysDocs.length > 0 && <span className="pulse-dot bg-amber-500"></span>}
           </div>
-          <span className="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1 block">{twoDaysDocs.length}</span>
+          <span className="text-3xl font-extrabold text-amber-400 mt-1 block">{twoDaysDocs.length}</span>
         </button>
 
         <button
           onClick={() => setActiveTab('VALID')}
-          className={`glass-card p-4 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[90px] col-span-2 sm:col-span-1 ${
+          className={`glass-card p-5 text-left transition-all cursor-pointer flex flex-col justify-between min-h-[100px] col-span-2 sm:col-span-1 ${
             activeTab === 'VALID' ? 'border-emerald-500 ring-2 ring-emerald-500/30 bg-emerald-500/20' : 'hover:border-emerald-500/40'
           }`}
         >
-          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 block">Valid</span>
-          <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1 block">{validDocs.length}</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 block">Valid</span>
+          <span className="text-3xl font-extrabold text-emerald-400 mt-1 block">{validDocs.length}</span>
         </button>
       </div>
 
@@ -197,17 +197,19 @@ export function DocumentsView({
 
       {/* Documents List */}
       {filteredDocs.length === 0 ? (
-        <div className="glass-panel p-12 text-center text-slate-400 space-y-3">
-          <FileText className="w-12 h-12 mx-auto text-slate-500 opacity-60" />
+        <div className="glass-panel p-12 text-center text-slate-400 space-y-3 bg-[#0B1528] border-white/[0.08]">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mx-auto text-slate-400">
+            <FileText className="w-7 h-7" />
+          </div>
           <h3 className="text-base font-bold text-white">No documents found</h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
             {searchQuery || selectedVehicleFilter || selectedTypeFilter || activeTab !== 'ALL'
-              ? 'No documents matched the current filters. Try changing or resetting filters.'
-              : 'Upload your vehicle documents (RC, Insurance, Fitness, Permits) to monitor renewals.'}
+              ? 'No documents matched the current filters. Try changing or clearing your active filters.'
+              : 'Upload your vehicle compliance documents (RC, Insurance, Fitness, Permits) to monitor renewals.'}
           </p>
           <button 
             onClick={() => onOpenAddDoc()} 
-            className="btn-primary text-xs mt-2"
+            className="btn-primary text-xs mt-2 font-bold px-4 py-2"
           >
             + Upload Document
           </button>
@@ -226,7 +228,7 @@ export function DocumentsView({
               <div 
                 key={doc.id}
                 onClick={() => onSelectDocument(doc)}
-                className={`glass-card p-4 sm:p-5 cursor-pointer hover:bg-white/8 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 ${borderAccent} group`}
+                className={`glass-card p-4 sm:p-5 cursor-pointer hover:bg-white/[0.04] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 ${borderAccent} group bg-[#0B1528] border-white/[0.08]`}
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="shrink-0">
