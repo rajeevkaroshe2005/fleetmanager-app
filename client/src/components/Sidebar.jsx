@@ -137,7 +137,7 @@ export function Sidebar({
           }
         ].map((group) => (
           <div key={group.section} className="space-y-1">
-            <div className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
               {group.section}
             </div>
             {group.items.map((item) => {
@@ -148,24 +148,19 @@ export function Sidebar({
                 <button
                   key={item.id}
                   onClick={() => handleItemClick(item)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all h-10 relative group ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors h-9 relative group ${
                     isActive 
-                      ? 'bg-blue-600/15 text-white border border-blue-500/35 shadow-sm font-semibold' 
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent'
+                      ? 'bg-blue-600/10 text-white font-medium border-l-2 border-blue-500 rounded-l-none pl-2.5' 
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
                   }`}
                 >
-                  {/* Active indicator bar */}
-                  {isActive && (
-                    <span className="absolute left-0 top-2 bottom-2 w-1 bg-blue-500 rounded-r-full shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
-                  )}
-
-                  <div className="flex items-center gap-2.5 min-w-0 pl-1">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'}`} />
                     <span className="truncate">{item.label}</span>
                   </div>
 
                   {item.badge !== undefined && item.badge !== null && (
-                    <span className="min-w-[1.25rem] h-5 px-1.5 rounded-full bg-rose-500 text-white font-extrabold text-[10px] flex items-center justify-center shadow-md shadow-rose-500/40 shrink-0">
+                    <span className="min-w-[1.25rem] h-4.5 px-1.5 rounded-full bg-rose-500/80 text-white font-bold text-[9px] flex items-center justify-center shrink-0">
                       {item.badge}
                     </span>
                   )}
@@ -177,14 +172,14 @@ export function Sidebar({
       </nav>
 
       {/* Sticky User Profile & Logout */}
-      <div className="p-4 border-t border-white/[0.08] bg-[#050A16] space-y-3 shrink-0">
-        <div className="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+      <div className="p-3.5 border-t border-white/[0.05] bg-[#050A14] space-y-2 shrink-0">
+        <div className="p-2 rounded-lg bg-white/[0.02] border border-white/[0.04] flex items-center justify-between">
           <div className="flex items-center gap-2.5 truncate">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/30 text-blue-300 flex items-center justify-center font-bold text-xs shrink-0 border border-blue-400/30">
+            <div className="w-7 h-7 rounded-md bg-blue-600/20 text-blue-300 flex items-center justify-center font-bold text-xs shrink-0 border border-blue-500/20">
               {userInitials}
             </div>
             <div className="truncate text-left">
-              <p className="text-xs font-bold text-white truncate">{user?.businessName || user?.name || 'Transport Owner'}</p>
+              <p className="text-xs font-medium text-slate-200 truncate">{user?.businessName || user?.name || 'Transport Owner'}</p>
               <p className="text-[10px] text-slate-400 truncate">{user?.email || 'owner@fleet.com'}</p>
             </div>
           </div>
@@ -192,7 +187,7 @@ export function Sidebar({
 
         <button 
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/20 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5 shrink-0" />
           <span>Sign Out</span>
