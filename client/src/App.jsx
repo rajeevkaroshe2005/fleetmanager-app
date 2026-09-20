@@ -17,12 +17,29 @@ import { AddVehicleModal } from './components/AddVehicleModal';
 import { DocumentViewerModal } from './components/DocumentViewerModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { SettingsModal } from './components/SettingsModal';
+import { StitchMobileApp } from './mobile/StitchMobileApp';
 import { api } from './services/api';
 
 export function App() {
   const [user, setUser] = useState(api.getCurrentUser());
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+
+  // Responsive viewport and mobile app detection
+  const [isMobileScreen, setIsMobileScreen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 1024 || !!window.Capacitor?.isNativePlatform?.();
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileScreen(window.innerWidth < 1024 || !!window.Capacitor?.isNativePlatform?.());
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Core fleet state
   const [stats, setStats] = useState(null);
@@ -181,6 +198,23 @@ export function App() {
 
   if (!user) {
     return <AuthView onAuthSuccess={(u) => { setUser(u); }} />;
+  }
+
+  // Google Stitch Mobile UI - Active on mobile screens (< 1024px) & native Android Capacitor APK
+  if (isMobileScreen) {
+    return (
+      <StitchMobileApp
+        user={user}
+        stats={stats}
+        vehicles={vehicles}
+        documents={documents}
+        drivers={drivers}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        onRefreshData={loadFleetData}
+        onLogout={handleLogout}
+      />
+    );
   }
 
   return (
